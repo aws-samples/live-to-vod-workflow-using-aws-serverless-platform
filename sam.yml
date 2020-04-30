@@ -1,0 +1,163 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Parameters:
+  ClipsBucketName:
+    Type: String
+    Default: clips
+    Description: The name of the source bucket
+  ClipsOriginEndpointId:
+    Type: String
+    Description: The endpoint id of the livesignal from which clips should be extracted
+  PackagingGroupId:
+    Type: String
+    Description: The Id of the packaging group used to create HLS VOD packages
+
+Globals:
+  Function:
+    Runtime: python3.7
+    Timeout: 10
+    MemorySize: 256
+    Environment:
+      Variables:
+        CLIPS_TABLE: !Ref ClipsTable
+        CLIPS_BUCKET: !Ref ClipsBucket
+        CLIPS_ORIGIN_ENDPOINT_ID: !Ref ClipsOriginEndpointId
+        PACKAGING_GROUP_ID: !Ref PackagingGroupId
+        MEDIA_PACKAGE_S3_ROLE_ARN: !GetAtt MediaPackageS3Role.Arn
+
+Resources:
+  # A encrypted S3 bucket to store the clips
+  ClipsBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Sub '${ClipsBucketName}-${AWS::Region}-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  # Defines the Lambda function that triggers harvesting jobs
+  CreateNewClipWithHarvestJob:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler.create_new_clip
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: 'mediapackage:*'
+              Resource: "*"
+      Events:
+        Apigateway:
+          Type: Api
+          Properties:
+            Path: '/api/clip'
+            Method: POST
+
+  # Defines the Lambda function that processes harvested jobs
+  ProcessHarvestedClip:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler.process_harvested_clip
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: 'mediapackage-vod:*'
+              Resource: "*"
+              # Lambda need to be allowed to pass roles to MediaPackage
+            - Effect: Allow
+              Action: 'iam:PassRole'
+              Resource: "*"
+            - Effect: Allow
+              Action: 'dynamodb:PutItem'
+              Resource: !GetAtt ClipsTable.Arn
+
+  EventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: "HarvestJobToLambdaEventRule"
+      EventPattern:
+        source:
+          - "aws.mediapackage"
+        detail-type:
+          - "MediaPackage HarvestJob Notification"
+      State: "ENABLED"
+      Targets:
+        - Arn: !GetAtt ProcessHarvestedClip.Arn
+          Id: "HarvestJobLambda"
+
+  PermissionForEventsToInvokeLambda:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ProcessHarvestedClip
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt EventRule.Arn
+
+  ## Creates a DynamoDB table where we store information about clips
+  ClipsTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: competition
+          AttributeType: S
+        - AttributeName: clip
+          AttributeType: S
+      KeySchema:
+        - AttributeName: competition
+          KeyType: HASH
+        - AttributeName: clip
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      TableName: "Clips"
+
+  GetAllClips:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler.get_all_clips_for_competition
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'dynamodb:Query'
+              Resource: !GetAtt ClipsTable.Arn
+      Events:
+        Apigateway:
+          Type: Api
+          Properties:
+            Path: '/api/competitions/{competitionId}/clips'
+            Method: GET
+
+  ## Allows AWS Elemental MediaPackage to write data to the S3 bucket we chose to store our clips in
+  MediaPackageS3Role:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'mediapackage.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: S3ClipsBucketAccess
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - "Effect": "Allow"
+                "Action": "s3:*"
+                "Resource": [
+                  !Sub "arn:aws:s3:::${ClipsBucketName}-${AWS::Region}-${AWS::AccountId}/*",
+                  !Sub "arn:aws:s3:::${ClipsBucketName}-${AWS::Region}-${AWS::AccountId}"
+                ]
+
+Outputs:
+  ApiURL:
+    Description: "API endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/stage/"
