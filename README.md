@@ -21,13 +21,25 @@ aws mediapackage list-origin-endpoints
 
 ### Let’s get you started
 
-#### 1. Make sure you completed the prerequisites above and git pulled the code by running the following command in a local directory: `git clone git@github.com:aws-samples/live-to-vod-workflow-using-aws-serverless-platform`
+#### 1. Make sure you completed the prerequisites above and git pulled this repo.
 
-#### 2. Open the repository in your preferred IDE and familiarize yourself with `handler.py`, `create_packaging_group.py` and `sam.yml`
+```
+git clone git@github.com:aws-samples/live-to-vod-workflow-using-aws-serverless-platform
+```
 
-#### 3. Create a deployment bucket for our code on S3 using the following command: `aws s3 mb s3://<YOUR_BUCKET>`
+#### 2. Open the repository in your preferred IDE and familiarize yourself with the code.
 
-#### 4. Create a packing group by running the following command and note the `PACKAGING_GROUP_ID`
+- `sam.yml` describes the AWS resources that make up your workflow.
+- `handler.py` contains the Python code for our Lambda functions.
+- `create_packaging_group.py` is a convenience script to create a packaging group.
+
+#### 3. Create a deployment bucket for our code on S3.
+
+```
+aws s3 mb s3://<YOUR_BUCKET>
+```
+
+#### 4. Create a packing group and note the `PACKAGING_GROUP_ID`
 
 ```
 python create_packaging_group.py <THE_ID_FOR_YOUR_PACKAGING_GROUP> <THE_ID_FOR_YOUR_PACKAGING_CONFIG>
