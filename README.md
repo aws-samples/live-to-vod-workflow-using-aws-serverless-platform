@@ -21,13 +21,13 @@ aws mediapackage list-origin-endpoints
 
 ### Let’s get you started
 
-1. Make sure you completed the prerequisites above and git pulled the code by running the following command in a local directory: `git clone git@github.com:aws-samples/live-to-vod-workflow-using-aws-serverless-platform`
+#### 1. Make sure you completed the prerequisites above and git pulled the code by running the following command in a local directory: `git clone git@github.com:aws-samples/live-to-vod-workflow-using-aws-serverless-platform`
 
-2. Open the repository in your preferred IDE and familiarize yourself with `handler.py`, `create_packaging_group.py` and `sam.yml`
+#### 2. Open the repository in your preferred IDE and familiarize yourself with `handler.py`, `create_packaging_group.py` and `sam.yml`
 
-3. Create a deployment bucket for our code on S3 using the following command: `aws s3 mb s3://<YOUR_BUCKET>`
+#### 3. Create a deployment bucket for our code on S3 using the following command: `aws s3 mb s3://<YOUR_BUCKET>`
 
-4. Create a packing group by running the following command and note the `PACKAGING_GROUP_ID`
+#### 4. Create a packing group by running the following command and note the `PACKAGING_GROUP_ID`
 
 ```
 python create_packaging_group.py <THE_ID_FOR_YOUR_PACKAGING_GROUP> <THE_ID_FOR_YOUR_PACKAGING_CONFIG>
@@ -39,13 +39,13 @@ i.e.
 python create_packaging_group.py MyPackagingGroupForVOD MyPackagingConfigForVODInHLS
 ```
 
-5. Create a SAM package of your application for deployment
+#### 5. Create a SAM package of your application for deployment
 
 ```
 sam package --template-file ./sam.yml --s3-bucket <YOUR_BUCKET>  --output-template-file ./packaged.yml
 ```
 
-6. Deploy your application
+#### 6. Deploy your application
 
 ```
 sam deploy --template-file packaged.yml --stack-name ServerlessLiveToVOD --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ClipsOriginEndpointId=YOUR_ORIGIN_ID PackagingGroupId=YOUR_PACKAGING_GROUP_ID
@@ -64,7 +64,7 @@ aws mediapackage list-origin-endpoints --query "OriginEndpoints[*].[Id]" --outpu
 aws mediapackage-vod list-packaging-groups --query "PackagingGroups[*].Id" --output table
 ```
 
-After the deployment has been successful, SAM will output parameter `API endpoint URL` of the form `https://abcde.execute-api.eu-central-1.amazonaws.com/prod/`. This is your API endpoint which you can use to create clips from your live stream and query your clip database
+After the deployment has been successful, SAM will output a parameter `API endpoint URL`. The value should look similar to this: `https://abcde.execute-api.eu-central-1.amazonaws.com/prod/` - this is your API endpoint, which you can now use to create clips from your live stream and query your clip database.
 
 ## Cleaning up
 
