@@ -1,6 +1,8 @@
 #  Creating a Live-to-VOD workflow using AWS Elemental Services and the AWS serverless platform
 
-This repository contains the full source code that ius used in the blog post "----------".
+This repository contains the full source code that is used in the blog post "Creating a serverless Live-To-VOD workflow to extract clips from a live stream".
+
+[TODO] ADD LINK TO BLOGPOST
 
 ## Solution Overview
 
