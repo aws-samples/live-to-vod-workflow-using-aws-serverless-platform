@@ -1,8 +1,6 @@
 #  Creating a Live-to-VOD workflow using AWS Elemental Services and the AWS serverless platform
 
-This repository contains the full source code that is used in the blog post "Creating a serverless Live-To-VOD workflow to extract clips from a live stream".
-
-[TODO] ADD LINK TO BLOGPOST
+This repository contains the full source code that is used in the blog post [Create a serverless Live-to-VOD workflow with AWS Elemental](https://aws.amazon.com/blogs/architecture/field-notes-create-a-serverless-live-to-vod-workflow-with-aws-elemental/).
 
 ## Solution Overview
 
@@ -15,7 +13,7 @@ This repository contains the full source code that is used in the blog post "Cre
 - An [AWS account](https://signin.aws.amazon.com/signin?redirect_uri=https%3A%2F%2Fportal.aws.amazon.com%2Fbilling%2Fsignup%2Fresume&client_id=signup)
 - Installed and authenticated [AWS CLI](https://docs.aws.amazon.com/en_pv/cli/latest/userguide/cli-chap-install.html) (authenticate with an [IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started.html) user or an [AWS STS](https://docs.aws.amazon.com/STS/latest/APIReference/Welcome.html) Security Token)
 - [AWS Serverless Application Model (AWS SAM)](https://docs.aws.amazon.com/serverless-application-model/index.html)
-- You have completed steps 1-3 of the [AWS Live Streaming and Live-to-VOD Workshop]() **or** already have an AWS Elemental MediaPackage live endpoint you want to extract clips from. You can check your existing endpoints using the following CLI command.
+- You have completed steps 1-3 of the [AWS Live Streaming and Live-to-VOD Workshop](https://github.com/aws-samples/aws-media-services-simple-live-workflow) **or** already have an AWS Elemental MediaPackage live endpoint you want to extract clips from. You can check your existing endpoints using the following CLI command.
 
 ```
 aws mediapackage list-origin-endpoints
