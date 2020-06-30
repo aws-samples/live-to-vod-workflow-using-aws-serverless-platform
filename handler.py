@@ -27,8 +27,8 @@ def create_new_clip(event, context):
 
     clip_id = f"{clip_start}_{clip_end}"
     mediapackage.create_harvest_job(
-        StartTime=clip_start,
-        EndTime=clip_end,
+        StartTime=str(clip_start),
+        EndTime=str(clip_end),
         Id=clip_id,
         OriginEndpointId=CLIPS_ORIGIN_ENDPOINT_ID,
         S3Destination={
