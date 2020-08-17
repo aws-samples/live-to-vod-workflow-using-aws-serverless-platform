@@ -70,13 +70,13 @@ If you are unsure about the values for `ClipsOriginEndpointId` and `PackagingGro
 ```
 aws mediapackage list-origin-endpoints --query "OriginEndpoints[*].[Id]" --output table
 ```
-##### List Packaging Groups+
+##### List Packaging Groups
 
 ```
 aws mediapackage-vod list-packaging-groups --query "PackagingGroups[*].Id" --output table
 ```
 
-After the deployment has been successful, SAM will output a parameter `API endpoint URL`. The value should look similar to this: `https://abcde.execute-api.eu-central-1.amazonaws.com/prod/` - this is your API endpoint, which you can now use to create clips from your live stream and query your clip database.
+After the deployment has been successful, SAM will output a parameter `API endpoint URL`. The value should look similar to this: `https://abcde.execute-api.eu-central-1.amazonaws.com/stage/` - this is your API endpoint, which you can now use to create clips from your live stream and query your clip database.
 
 ## Cleaning up
 
