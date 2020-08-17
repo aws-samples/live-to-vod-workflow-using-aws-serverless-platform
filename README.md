@@ -70,7 +70,7 @@ If you are unsure about the values for `ClipsOriginEndpointId` and `PackagingGro
 ```
 aws mediapackage list-origin-endpoints --query "OriginEndpoints[*].[Id]" --output table
 ```
-##### List Packaging Groups+
+##### List Packaging Groups
 
 ```
 aws mediapackage-vod list-packaging-groups --query "PackagingGroups[*].Id" --output table
