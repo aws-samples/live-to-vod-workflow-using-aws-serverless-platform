@@ -48,6 +48,9 @@ Resources:
             - Effect: Allow
               Action: 'mediapackage:*'
               Resource: "*"
+            - Effect: Allow
+              Action: 'iam:PassRole'
+              Resource: !GetAtt MediaPackageS3Role.Arn
       Events:
         Apigateway:
           Type: Api
@@ -69,7 +72,7 @@ Resources:
               # Lambda need to be allowed to pass roles to MediaPackage
             - Effect: Allow
               Action: 'iam:PassRole'
-              Resource: "*"
+              Resource: !GetAtt MediaPackageS3Role.Arn
             - Effect: Allow
               Action: 'dynamodb:PutItem'
               Resource: !GetAtt ClipsTable.Arn
