@@ -55,7 +55,7 @@ def process_harvested_clip(event, context):
     manifest_key = harvest_job['s3_destination']['manifest_key']
 
     if harvest_job['status'] == "SUCCEEDED":
-        asset = mediapackage.create_asset(
+        asset = mediapackage_vod.create_asset(
             Id=harvest_job['id'],
             PackagingGroupId=PACKAGING_GROUP_ID,
             SourceArn=f"arn:aws:s3:::{destination_bucket_name}/{manifest_key}",
