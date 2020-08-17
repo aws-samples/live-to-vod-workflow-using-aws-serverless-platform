@@ -76,7 +76,7 @@ aws mediapackage list-origin-endpoints --query "OriginEndpoints[*].[Id]" --outpu
 aws mediapackage-vod list-packaging-groups --query "PackagingGroups[*].Id" --output table
 ```
 
-After the deployment has been successful, SAM will output a parameter `API endpoint URL`. The value should look similar to this: `https://abcde.execute-api.eu-central-1.amazonaws.com/stage/` - this is your API endpoint, which you can now use to create clips from your live stream and query your clip database.
+REplaAfter the deployment has been successful, SAM will output a parameter `API endpoint URL`. The value should look similar to this: `https://abcde.execute-api.eu-central-1.amazonaws.com/prod/` - this is your API endpoint, which you can now use to create clips from your live stream and query your clip database.
 
 ## Cleaning up
 
