@@ -66,7 +66,7 @@ def process_harvested_clip(event, context):
             "competition": COMPETITION_ID,
             "clip": asset['Id'],
             "meta": {
-                "id": asset.Id,
+                "id": asset['Id'],
                 "title": f"Clip: ${asset['Id']}"
             },
             "manifests": asset['EgressEndpoints']
